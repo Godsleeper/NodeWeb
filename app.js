@@ -1,8 +1,13 @@
 var express = require("express");
 var path = require('path');
+var mongoose = require('mongoose')
+var Movie = require('./models/movie');
+var _ =require('underscore')
 var port = process.env.PORT||3000;//当前环境变量的端口号
 var app = express();
 
+
+mongoose.connect('mongodb://localhost/NodeWeb')
 
 app.set("views","./views/pages")//参数为views，设置视图文件目录
 app.set("view engine","jade");//模板引擎为jade,MVC中的v视图由模板引擎创建html
@@ -14,34 +19,16 @@ console.log(port)
 
 //编写路由
 app.get('/',function(req,res){
+	Movie.fetch(function(err,movies){
+		if(err){
+			console.log(err);
+		}
+		//渲染模版引擎生成的页面
 	res.render('index',{
-		title:"imooc 首页",
-		movies:[{
-			title:'小鬼当家',
-			_id:1,
-			poster:'http://img31.mtime.cn/mg/2015/03/27/120537.13212993_270X405X4.jpg'
-		},{
-			title:'小鬼当家',
-			_id:2,
-			poster:'http://img31.mtime.cn/mg/2015/03/27/120537.13212993_270X405X4.jpg'
-		},{
-			title:'小鬼当家',
-			_id:3,
-			poster:'http://img31.mtime.cn/mg/2015/03/27/120537.13212993_270X405X4.jpg'
-		},{
-			title:'小鬼当家',
-			_id:4,
-			poster:'http://img31.mtime.cn/mg/2015/03/27/120537.13212993_270X405X4.jpg'
-		},{
-			title:'小鬼当家',
-			_id:5,
-			poster:'http://img31.mtime.cn/mg/2015/03/27/120537.13212993_270X405X4.jpg'
-		},{
-			title:'小鬼当家',
-			_id:6,
-			poster:'http://img31.mtime.cn/mg/2015/03/27/120537.13212993_270X405X4.jpg'
-		}]
-	})
+		title:"NodeWeb 首页",
+		movies:movies
+		})
+	})	
 })
 
 app.get('/admin/movie',function(req,res){
@@ -60,55 +47,83 @@ app.get('/admin/movie',function(req,res){
 	})
 })
 
+
+app.post('/admin/movie/new',function(req,res){
+	var id = req.body.movie._id;
+	var movieobj = req.body.movie;
+	var _movie;
+	//id不是未声明的，说明已经存储过了
+	if(id!=undefined){
+		Movie.findById(id,function(err,movie){
+			if(err){
+				console.log(err)
+			}
+
+		_movie = _.extent(movie,movieobj);
+		_movie.save(err,function(){
+			if(err){
+				console.log(err)
+			}
+			res.redirect("/movie/"+movie._id)
+			})
+		})
+	}else{
+		_movie = new Movie({
+			doctor:movieobj.doctor,
+			title:movieobj.title,
+			country:movieobj.country,
+			language:movieobj.language,
+			flash:movieobj.flash,
+			summary:movieobj.summary,
+			poster:movieobj.poster,
+			year:movieobj.year,
+		});
+
+		_movie.save(function(err,movie){
+			if(err){
+				console.log(err)
+			}
+			res.redirect("/movie/"+movie._id)
+			})
+	}
+})
+
+
+app.get('/admin/update/:id',function(req,res){
+	var id = req.params.id;
+	if(id){
+		Movie.findById(id,function(err,movie){
+			res.render('admin',{
+				title:'NodeWeb 后台更新页',
+				movie:movie
+			})
+		})
+	}
+})
+
+
 app.get('/movie/:id',function(req,res){
-	res.render('detail',{
-		title:"详情页",
-		movie:{
-			doctor:"张艺谋",
-			country:'China',
-			title:'小鬼当家',
-			year:2000,
-			poster:'http://img31.mtime.cn/mg/2015/03/27/120537.13212993_270X405X4.jpg',
-			language:'英语',
-			flash:'http://player.youku.com/player.php/sid/XNjA1Njc0NTUy/v.swf',
-			summary:'哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈'
-		}
+	var id = req.params.id;
+
+	Movie.findById(id,function(err,movie){
+		res.render('detail',{
+		title:"NodeWeb"+movie.title,
+		movie:movie
 	})
+	})
+	
 })
 
 app.get('/admin/list',function(req,res){
-	res.render('list',{
-		title:"列表页",
-		movies:[{
-			_id:1,
-			doctor:"张艺谋",
-			country:'China',
-			title:'小鬼当家',
-			year:2000,
-			poster:'http://img31.mtime.cn/mg/2015/03/27/120537.13212993_270X405X4.jpg',
-			language:'英语',
-			flash:'http://player.youku.com/player.php/sid/XNjA1Njc0NTUy/v.swf',
-			summary:'哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈'
-		},{
-			_id:1,
-			doctor:"张艺谋",
-			country:'China',
-			title:'小鬼当家',
-			year:2000,
-			poster:'http://img31.mtime.cn/mg/2015/03/27/120537.13212993_270X405X4.jpg',
-			language:'英语',
-			flash:'http://player.youku.com/player.php/sid/XNjA1Njc0NTUy/v.swf',
-			summary:'哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈'
-		},{
-			_id:1,
-			doctor:"张艺谋",
-			country:'China',
-			title:'小鬼当家',
-			year:2000,
-			poster:'http://img31.mtime.cn/mg/2015/03/27/120537.13212993_270X405X4.jpg',
-			language:'英语',
-			flash:'http://player.youku.com/player.php/sid/XNjA1Njc0NTUy/v.swf',
-			summary:'哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈'
-		}]
+
+	Movie.fetch(function(err,movies){
+		if(err){
+			console.log(err);
+		}
+		//渲染模版引擎生成的页面
+		res.render('list',{
+			title:"列表页",
+			movies:movies
+		})
 	})
 })
