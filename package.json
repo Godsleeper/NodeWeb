@@ -4,13 +4,19 @@
   "description": "a website about movie",
   "main": "app.js",
   "dependencies": {
+    "bcryptjs": "^2.3.0",
     "express": "^3.0.0",
     "jade": "^1.11.0",
     "moment": "^2.14.1",
     "mongoose": "^4.5.7",
     "underscore": "^1.8.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-concurrent": "^2.3.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-nodemon": "^0.4.2"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

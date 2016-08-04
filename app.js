@@ -1,13 +1,13 @@
 var express = require("express");
-var path = require('path');
+var path = require('path');//处理路径的模块
 var mongoose = require('mongoose')
 var Movie = require('./models/movie');
 var _= require('underscore');
-var port = process.env.PORT||27017;//当前环境变量的端口号
+var port = process.env.PORT||3000;//当前环境变量的端口号
 var app = express();
 
 
-mongoose.connect('mongodb://localhost/imooc')
+mongoose.connect('mongodb://localhost/imooc');//连接数据库
 
 app.set("views","./views/pages")//参数为views，设置视图文件目录
 app.set("view engine","jade");//模板引擎为jade,MVC中的v视图由模板引擎创建html
