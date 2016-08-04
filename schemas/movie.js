@@ -20,6 +20,7 @@ var MovieSchema = new mongoose.Schema({
 	}
 })
 
+
 MovieSchema.pre('save',function(next){//存储之前的预处理方法
 	if(this.isNew){
 		this.meta.createdAt = this.meta.updateAt = Date.now();//首次录入，将新建时间和更新时间设为现在
@@ -29,6 +30,7 @@ MovieSchema.pre('save',function(next){//存储之前的预处理方法
 	next();//将对象给到下一个，否则只响应最先定义的那个
 })
 
+//添加静态方法，在模型层存储数据库时就可用
 MovieSchema.statics = {
 	//取出数据库中所有的数据
 	fetch:function(cb){
@@ -41,7 +43,7 @@ MovieSchema.statics = {
 	findById:function(id,cb){
 		return this
 		.findOne({_id:id})
-		 .exec(cb);
+		.exec(cb);
 	}
 }
 
