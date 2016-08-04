@@ -1,0 +1,25 @@
+{
+  "name": "NodeWeb",
+  "description": "website about movie",
+  "main": "",
+  "keywords": [
+    "movie"
+  ],
+  "authors": [
+    "sleepinggod"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/libs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  }
+}

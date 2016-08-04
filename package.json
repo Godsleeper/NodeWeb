@@ -1,0 +1,30 @@
+{
+  "name": "movie",
+  "version": "1.0.0",
+  "description": "a website about movie",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^3.0.0",
+    "jade": "^1.11.0",
+    "moment": "^2.14.1",
+    "mongoose": "^4.5.7",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Godsleeper/NodeWeb.git"
+  },
+  "keywords": [
+    "movie"
+  ],
+  "author": "sleepinggod",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Godsleeper/NodeWeb/issues"
+  },
+  "homepage": "https://github.com/Godsleeper/NodeWeb#readme"
+}
