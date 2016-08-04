@@ -14,7 +14,7 @@ app.set("view engine","jade");//模板引擎为jade,MVC中的v视图由模板引
 app.use(express.bodyParser())//使用中间件解析post请求
 app.use(express.static(path.join(__dirname,'bower_components')))
 app.listen(port)
-
+app.locals.moment = require('moment')
 console.log(port)
 
 //编写主页路由
@@ -26,7 +26,7 @@ app.get('/',function(req,res){
 		}
 		//渲染模版引擎生成的页面
 	res.render('index',{
-		title:"NodeWeb 首页",
+		title:"电影网站 首页",
 		movies:movies//将取出的movies渲染到首页中，包括(_id,title,poster)
 		})
 	})	
@@ -52,13 +52,9 @@ app.get('/admin/movie',function(req,res){
 //重定向，每次post生成一个新的详情页，最后重定向到那一页，不能够重新render
 app.post('/admin/movie/new',function(req,res){
 	//判断
-	var id = req.body.movie._id;
-	console.log(req.body);
-	console.log(req.body.movie);
-
+	var id = req.body.movie._id;//获取的post上的数据，经过处理是一个json对象
 	var movieobj = req.body.movie;
 	var _movie;
-	console.log('_id',id)
 	//id不是未声明的，说明已经存储过了
 	if(id!=='undefined'){
 		Movie.findById(id,function(err,movie){
@@ -100,7 +96,7 @@ app.get('/admin/update/:id',function(req,res){
 	if(id){
 		Movie.findById(id,function(err,movie){
 			res.render('admin',{
-				title:'NodeWeb 后台更新页',
+				title:'电影网站 后台更新页',
 				movie:movie
 			})
 		})
@@ -113,7 +109,7 @@ app.get('/movie/:id',function(req,res){
 	var id = req.params.id;
 	Movie.findById(id,function(err,movie){
 		res.render('detail',{
-		title:"NodeWeb"+movie.title,
+		title:"电影网站"+movie.title,
 		movie:movie
 		})
 	})	
