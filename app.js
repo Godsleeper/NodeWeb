@@ -97,14 +97,14 @@ app.get('/admin/update/:id',function(req,res){
 		Movie.findById(id,function(err,movie){
 			res.render('admin',{
 				title:'电影网站 后台更新页',
-				movie:movie
+				movie:movie//jade只使用了movie中部分字段的信息，全传进去选择需要的即可
 			})
 		})
 	}
 })
 
 
-//编写详情页
+//编写详情页，get就是服务器用来处理get请求的路由函数
 app.get('/movie/:id',function(req,res){
 	var id = req.params.id;
 	Movie.findById(id,function(err,movie){
@@ -129,4 +129,18 @@ app.get('/admin/list',function(req,res){
 			movies:movies
 		})
 	})
+})
+
+//编写处理删除的路由
+app.delete('/admin/list',function(req,res){
+	var id = req.query.id;
+	if(id){
+		Movie.remove({_id:id},function(err,movie){
+			if(err){
+				console.log(err);
+			}else{
+				res.json({success:1})//没有异常返回json数据
+			}
+		})
+	}
 })
