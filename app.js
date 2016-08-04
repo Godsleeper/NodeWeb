@@ -12,7 +12,7 @@ mongoose.connect('mongodb://localhost/imooc')
 app.set("views","./views/pages")//参数为views，设置视图文件目录
 app.set("view engine","jade");//模板引擎为jade,MVC中的v视图由模板引擎创建html
 app.use(express.bodyParser())//使用中间件解析post请求
-app.use(express.static(path.join(__dirname,'bower_components')))
+app.use(express.static(path.join(__dirname,'public')))
 app.listen(port)
 app.locals.moment = require('moment')
 console.log(port)
