@@ -2,7 +2,7 @@ var express = require("express");
 var path = require('path');//处理路径的模块
 var _= require('underscore');
 var mongoose = require('mongoose');
-
+var mongoStore = require('connect-mongo')(express);
 
 var Movie = require('./models/movie');
 var User = require('./models/user');
@@ -10,19 +10,32 @@ var User = require('./models/user');
 var port = process.env.PORT||3000;//当前环境变量的端口号
 var app = express();
 
-
-mongoose.connect('mongodb://localhost/imooc');//连接数据库
+app.locals.moment = require('moment')
+var dbURL = 'mongodb://localhost/imooc'
+mongoose.connect(dbURL);//连接数据库
 
 app.set("views","./views/pages")//参数为views，设置视图文件目录
 app.set("view engine","jade");//模板引擎为jade,MVC中的v视图由模板引擎创建html
-app.use(express.bodyParser())//使用中间件解析post请求
-app.use(express.static(path.join(__dirname,'public')))
+
+app.use(express.bodyParser());//使用中间件解析post请求
+app.use(express.static(path.join(__dirname,'public')));//设置静态文件地址，都在public下
+app.use(express.cookieParser());
+app.use(express.session({
+	secret:'imooc',
+	store:new mongoStore({
+		url:dbURL,
+		collection:'sessions'
+	})
+}))
+
 app.listen(port)
-app.locals.moment = require('moment')
+
 console.log(port)
 
 //编写主页路由
 app.get('/',function(req,res){
+	console.log('session');
+	console.log(req.session.user);
 	//fetch：取出所有数据，按查询时间排序，执行回调函数
 	Movie.fetch(function(err,movies){
 		if(err){
@@ -198,11 +211,13 @@ app.post('/user/signin',function(req,res){
 		user.comparePassword(password,function(err,isMatch){
 			if(err){console.log(err)}
 			if(isMatch){
+				req.session.user=user;
 				console.log('密码正确');
 				return res.redirect('/');
 			}else{
-				console.log('密码不对');
+				console.log('密码错误');
 			}
 		})
 	})
 })
+
