@@ -1,7 +1,7 @@
 extend ../layout
 
 block content
-  .container
+  .container(style='font-family:"Microsoft YaHei"')
     .row
       each item in movies
         .col-md-2
@@ -9,5 +9,5 @@ block content
             a(href="/movie/#{item._id}")
               img(src="#{item.poster}",alt="#{item.title}")
             .caption
-              h3(style='font-family:"Microsoft YaHei"') #{item.title}
+              h3 #{item.title}
               p: a.btn.btn-primary(href="/movie/#{item._id}",role="button") 观看预告片

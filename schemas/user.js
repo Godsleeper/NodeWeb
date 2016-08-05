@@ -6,7 +6,7 @@ var UserSchema = new mongoose.Schema({
 		type:String,
 		unique:true
 	},
-	password::String,
+	password:String,
 	meta:{
 		createdAt:{
 			type:Date,
@@ -42,6 +42,17 @@ UserSchema.pre('save',function(next){//存储之前的预处理方法
 		})
 	});
 })
+
+
+//添加实例方法，给具体找出的文档集合用
+UserSchema.methods={
+	comparePassword:function(_password,cb){
+		bcrypt.compare(_password,this.password,function(err,isMatch){
+			if(err){return cb(err);}
+			cb(null,isMatch);
+		})
+	}
+}
 
 //添加静态方法，在模型层存储数据库时就可用
 UserSchema.statics = {

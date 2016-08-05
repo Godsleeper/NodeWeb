@@ -1,8 +1,12 @@
 var express = require("express");
 var path = require('path');//处理路径的模块
-var mongoose = require('mongoose')
-var Movie = require('./models/movie');
 var _= require('underscore');
+var mongoose = require('mongoose');
+
+
+var Movie = require('./models/movie');
+var User = require('./models/user');
+
 var port = process.env.PORT||3000;//当前环境变量的端口号
 var app = express();
 
@@ -90,7 +94,7 @@ app.post('/admin/movie/new',function(req,res){
 	}
 })
 
-
+//编写更新页，将数据库的信息拿出去重新取出，只是渲染一个页面，具体的数据库操作通过submit，地址是admin/new
 app.get('/admin/update/:id',function(req,res){
 	var id = req.params.id;//使用params拿到路由信息的id，传给id
 	if(id){
@@ -133,7 +137,7 @@ app.get('/admin/list',function(req,res){
 
 //编写处理删除的路由
 app.delete('/admin/list',function(req,res){
-	var id = req.query.id;
+	var id = req.query.id;//url以delete的方式发来了要删除的admin/list?id=*****
 	if(id){
 		Movie.remove({_id:id},function(err,movie){
 			if(err){
@@ -143,4 +147,62 @@ app.delete('/admin/list',function(req,res){
 			}
 		})
 	}
+})
+
+//注册模块
+app.post('/user/signup',function(req,res){
+	var _user = req.body.user;//使用bodyparser将body转换为对象
+	
+	User.find({name:_user.name},function(err,user){
+		if(err){
+			console.log(err)
+		}
+		if(user.length>0){
+			return res.redirect('/');
+		}else{
+			var users = new User(_user);	
+			users.save(function(err,user){
+				if(err){
+					console.log(err);}
+			res.redirect('/admin/userlist');
+			})
+		}
+	})	
+});
+
+//用户管理模块
+app.get('/admin/userlist',function(req,res){
+	User.fetch(function(err,users){
+		if(err){
+			console.log(err);
+		}
+		//渲染模版引擎生成的页面
+		res.render('userlist',{
+			title:"用户列表页",
+			users:users
+		})
+	})
+});
+
+//登录模块
+app.post('/user/signin',function(req,res){
+	var _user = req.body.user;
+	var name = _user.name;
+	var password = _user.password;
+	User.findOne({name:name},function(err,user){
+		if(err){console.log(err);}
+		if(!user){
+			console.log('没有用户名');
+			return res.redirect('/');//如果没有这个人,返回首页
+		}
+		user.comparePassword(password,function(err,isMatch){
+			if(err){console.log(err)}
+			if(isMatch){
+				console.log('密码正确');
+				return res.redirect('/');
+			}else{
+				console.log('密码不对');
+			}
+		})
+	})
 })

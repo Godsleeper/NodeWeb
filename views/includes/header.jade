@@ -1,9 +1,9 @@
-.container
+.container(style='font-family:"Microsoft YaHei"')
   .row
     .page-header
-      h1(style='font-family:"Microsoft YaHei"')= title
-      small(style='font-family:"Microsoft YaHei"') 电影天堂
-.navbar.navbar-default.navbar-fixed-bottom
+      h1= title
+      small 电影天堂
+.navbar.navbar-default.navbar-fixed-bottom(style='font-family:"Microsoft YaHei"')
   .container
     .navbar-header
       a.navbar-brand(href='/') 电影天堂
@@ -11,7 +11,7 @@
       a.navbar-link(href='#',data-toggle="modal",data-target='#signupModal') 注册
       span &nbsp;|&nbsp;
       a.navbar-link(href='#',data-toggle="modal",data-target='#signinModal') 登录
-#signupModal.modal.fade
+#signupModal.modal.fade(style='font-family:"Microsoft YaHei"')
   .modal-dialog
     .modal-content
       form(method="POST",action='/user/signup')
@@ -26,7 +26,7 @@
         .modal-footer
           button.btn.btn-default(type='button',data-dismiss="modal") 关闭
           button.btn.btn-success(type='submit') 提交
-#signinModal.modal.fade
+#signinModal.modal.fade(style='font-family:"Microsoft YaHei"')
   .modal-dialog
     .modal-content
       form(method="POST",action='/user/signin')
