@@ -20,15 +20,15 @@ app.get('/',Index.index);
 //详情页
 app.get('/movie/:id',Movie.detail);
 //列表页
-app.get('/admin/list',Movie.list);
+app.get('/admin/movie/list',User.signinRequired,User.adminRequired,Movie.list);
 //删除的功能
-app.delete('/admin/list',Movie.del);
+app.delete('/admin/movie/list',User.signinRequired,User.adminRequired,Movie.del);
 //更新的功能
-app.get('/admin/update/:id',Movie.update);
+app.get('/admin/movie/update/:id',User.signinRequired,User.adminRequired,Movie.update);
 //添加页
-app.post('/admin/movie/new',Movie.save);
+app.post('/admin/movie',User.signinRequired,User.adminRequired,Movie.save);
 //管理页
-app.get('/admin/movie',Movie.new)
+app.get('/admin/movie/new',User.signinRequired,User.adminRequired,Movie.new);
 
 
 //************************用户的路由规划*****************************
@@ -39,6 +39,10 @@ app.post('/user/signin',User.signin);
 //登出模块
 app.get('/logout',User.logout)
 //用户管理模块
-app.get('/admin/userlist',User.list);
+app.get('/admin/user/list',User.signinRequired,User.adminRequired,User.list);
+//登录显示
+app.get('/signin',User.showSignin);
+//注册显示
+app.get('/signup',User.showSignup);
 
 };

@@ -23,7 +23,7 @@ app.use(express.session({
 	store:new mongoStore({
 		url:dbURL,
 		collection:'sessions'
-		
+
 	})
 }))
 
@@ -36,6 +36,7 @@ if('development'==app.get('env')){
 }
 
 require('./config/routes')(app);
+
 app.listen(port)
 
 console.log(port)
