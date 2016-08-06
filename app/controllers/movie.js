@@ -1,5 +1,6 @@
 var _= require('underscore');
 var Movie = require('../models/movie');
+var Comment = require('../models/comment');
 
 //编写管理页路由
 exports.new = function(req,res){
@@ -76,12 +77,20 @@ exports.update = function(req,res){
 exports.detail = function(req,res){
 	var id = req.params.id;
 	Movie.findById(id,function(err,movie){
-		res.render('detail',{
-		title:"电影网站"+movie.title,
-		movie:movie
+		//在comment中找，当前url中的id和movie中id对应的那条评论
+		Comment
+		.find({movie:id})
+		.populate('from','name')
+		.populate('reply.from reply.to','name')
+		.exec(function(err,comments){
+				res.render('detail',{
+				title:"电影网站"+movie.title,
+				movie:movie,
+				comments:comments
+			})	
 		})
 	})	
-}
+};
 
 //编写列表页
 exports.list = function(req,res){

@@ -1,10 +1,48 @@
 extend ../layout
 
 block content
-  .container
+  .container(style='font-family:"Microsoft YaHei"')
     .row 
       .col-md-5
         embed(src="#{movie.flash}",allowFullscreen="true",quality="high",width="550",height="400",align="middle",type="application/x-shockwave-flash")
+        .paner
+          .panel-heading
+            h3 评论区
+          .panel-body
+            ul.media-list
+              each item in comments
+                li.media
+                  .pull-left
+                    a.comment(href="#comments",data-cid="#{item._id}",data-tid="#{item.from.id}")
+                      img.media-object(src="",style="width:64px;height:64px",alt="图1")
+                  .media-body
+                    h4.media-heading #{item.from.name}
+                    p #{item.content}
+                    if item.reply && item.reply.length>0
+                      each reply in item.reply
+                        .media 
+                          .pull-left
+                            a.comment(href="#comments",data-cid="#{item._id}",data-tid="#{reply.from.id}")
+                              img.media-object(src="",style="width:64px;height:64px",alt="图2")
+                          .media-body
+                            h4.media-heading 
+                              | #{reply.from.name}
+                              span.text-info &nbsp;回复&nbsp;
+                              | #{reply.to.name}:
+                            p #{reply.content}
+                  hr
+          #comments
+            form#commentForm(method="POST",action="/user/comment")
+              input(type='hidden',name='comment[movie]',value="#{movie._id}")
+              if user
+                input(type='hidden',name='comment[from]',value="#{user._id}")
+              .form-group
+                textarea.form-control(name="comment[content]",row='3')
+              if user    
+                button.btn.btn-primary(type='submit',style="margin:0px 0px 10px 400px") 提交
+              else
+                a.navbar-link(href='#',data-toggle="modal",data-target='#signinModal') 登录才可以评论
+              .block(style="width:100%;height:50px")
       .col-md-7
         dl.dl-horizontal
           dt 电影名字
@@ -19,4 +57,4 @@ block content
           dd= movie.year
           dt 简介
           dd= movie.summary
-          
+  script(src="/js/detail.js")

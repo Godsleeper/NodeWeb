@@ -4,11 +4,11 @@ var User = require('../models/user');
 exports.signup = function(req,res){
 	var _user = req.body.user;//使用bodyparser将body转换为对象
 	
-	User.find({name:_user.name},function(err,user){
+	User.find({name:_user.name},function(err,users){
 		if(err){
 			console.log(err)
 		}
-		if(user.length>0){
+		if(users.length>0){
 			return res.redirect('/signin');
 		}else{
 			var users = new User(_user);	
@@ -94,18 +94,6 @@ exports.adminRequired = function(req,res,next){
 	if(user.role<=10){
 		return res.redirect('/signin');
 	}
-	// if(user.role>10){
-	// 	User.fetch(function(err,users){
-	// 		if(err){
-	// 			console.log(err);
-	// 		}
-	// 		//渲染模版引擎生成的页面
-	// 		res.render('userlist',{
-	// 			title:"用户列表页",
-	// 			users:users
-	// 		})
-	// 	})
-	// }
 	next();
 }
 
