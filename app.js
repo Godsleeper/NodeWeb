@@ -12,7 +12,7 @@ app.locals.moment = require('moment')
 var dbURL = 'mongodb://localhost/imooc'
 mongoose.connect(dbURL);//连接数据库
 
-app.set("views","./views/pages")//参数为views，设置视图文件目录
+app.set("views","./app/views/pages")//参数为views，设置视图文件目录
 app.set("view engine","jade");//模板引擎为jade,MVC中的v视图由模板引擎创建html
 
 app.use(express.bodyParser());//使用中间件解析post请求
@@ -23,6 +23,7 @@ app.use(express.session({
 	store:new mongoStore({
 		url:dbURL,
 		collection:'sessions'
+		
 	})
 }))
 
