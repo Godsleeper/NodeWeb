@@ -1,8 +1,8 @@
 var Index = require('../app/controllers/index');
 var User= require('../app/controllers/user');
 var Movie= require('../app/controllers/movie');
-var Comment = require('../app/controllers/comment')
-
+var Comment = require('../app/controllers/comment');
+var Category = require('../app/controllers/category');
 
 
 module.exports = function(app){
@@ -49,6 +49,16 @@ app.get('/signup',User.showSignup);
 //************************用户评论的路由规划*****************************
 app.post('/user/comment',User.signinRequired,Comment.save);
 
+//************************电影分类的路由规划*****************************
+//新增分类页
+app.get('/admin/category/new',User.signinRequired,User.adminRequired,Category.new);
+//分类管理页
+app.get('/admin/category/list',User.signinRequired,User.adminRequired,Category.list);
+//上传模块
+app.post('/admin/category',User.signinRequired,User.adminRequired,Category.save);
+
+//************************电影分类的路由规划********************************
+app.get('/results',Index.search);
 
 
 

@@ -1,19 +1,12 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.Types.ObjectId
-var MovieSchema = new Schema({
-	doctor:String,
-	title:String,
-	country:String,
-	language:String,
-	flash:String,
-	summary:String,
-	poster:String,
-	year:Number,
-	category:{
-		type:ObjectId,
-		ref:'Category'
-	},
+
+
+
+var CategorySchema = new Schema({
+	name:String,
+	movies:[{type:ObjectId,ref:'Movie'}],
 	meta:{
 		createdAt:{
 			type:Date,
@@ -27,7 +20,7 @@ var MovieSchema = new Schema({
 })
 
 
-MovieSchema.pre('save',function(next){//存储之前的预处理方法
+CategorySchema.pre('save',function(next){//存储之前的预处理方法
 	if(this.isNew){
 		this.meta.createdAt = this.meta.updateAt = Date.now();//首次录入，将新建时间和更新时间设为现在
 	}else{
@@ -37,7 +30,7 @@ MovieSchema.pre('save',function(next){//存储之前的预处理方法
 })
 
 //添加静态方法，在模型层存储数据库时就可用
-MovieSchema.statics = {
+CategorySchema.statics = {
 	//取出数据库中所有的数据
 	fetch:function(cb){
 		return this
@@ -53,4 +46,4 @@ MovieSchema.statics = {
 	}
 }
 
-module.exports = MovieSchema;
+module.exports = CategorySchema;

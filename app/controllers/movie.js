@@ -1,21 +1,16 @@
 var _= require('underscore');
 var Movie = require('../models/movie');
 var Comment = require('../models/comment');
+var Category = require('../models/category');
 
 //编写管理页路由
 exports.new = function(req,res){
+	Category.find({},function(err,categories){
 	res.render('admin',{
 		title:"后台管理页",
-		movie:{
-			title:'',
-			doctor:'',
-			country:'',
-			year:'',
-			poster:'',
-			flash:'',
-			summary:'',
-			language:''
-		}
+		movie:{},
+		categories:categories,
+		})
 	})
 };
 
@@ -25,8 +20,9 @@ exports.save=function(req,res){
 	var id = req.body.movie._id;//获取的post上的数据，经过处理是一个json对象
 	var movieobj = req.body.movie;
 	var _movie;
+
 	//id不是未声明的，说明已经存储过了
-	if(id!=='undefined'){
+	if(id){
 		Movie.findById(id,function(err,movie){
 			if(err){
 				console.log(err)
@@ -41,33 +37,51 @@ exports.save=function(req,res){
 			})
 		})
 	}else{
-			_movie = new Movie({
-			doctor:movieobj.doctor,
-			title:movieobj.title,
-			country:movieobj.country,
-			language:movieobj.language,
-			flash:movieobj.flash,
-			summary:movieobj.summary,
-			poster:movieobj.poster,
-			year:movieobj.year,
-		});
+			_movie = new Movie(movieobj);
+				var categoryId = movieobj.category;//拿到这部新增电影的类别
+				var categoryName = movieobj.categoryName;//拿到这部电影自定义的类别
+
 		_movie.save(function(err,movie){
 			if(err){
 				console.log(err)
 			}
-			res.redirect("/movie/"+movie._id)
-			})
+			if(categoryId){
+				Category.findById(categoryId,function(err,category){
+					category.movies.push(movie._id);//这一条文档中的movie为空，添加一条电影的id
+					category.save(function(err,categories){
+					res.redirect("/movie/"+movie._id)	
+					})
+				})	
+			}else if(categoryName){
+				var category = new  Category({
+					name:categoryName,
+					movies:[movie._id]//新分类下的电影，这是第一条
+				})
+
+				category.save(function(err,categories){
+					movie.category = categories._id; 
+					movie.save(function(err,movie){
+					res.redirect("/movie/"+movie._id)	
+					})
+				})
+
+			}
+		})
 	}
 };
+
 
 //编写更新页，将数据库的信息拿出去重新取出，只是渲染一个页面，具体的数据库操作通过submit，地址是admin/new
 exports.update = function(req,res){
 	var id = req.params.id;//使用params拿到路由信息的id，传给id
 	if(id){
 		Movie.findById(id,function(err,movie){
-			res.render('admin',{
-				title:'电影网站 后台更新页',
-				movie:movie//jade只使用了movie中部分字段的信息，全传进去选择需要的即可
+			Category.find({},function(err,categories){
+				res.render('admin',{
+					title:'后台更新页',
+					movie:movie,//jade只使用了movie中部分字段的信息，全传进去选择需要的即可
+					categories:categories
+				})
 			})
 		})
 	}
@@ -84,7 +98,7 @@ exports.detail = function(req,res){
 		.populate('reply.from reply.to','name')
 		.exec(function(err,comments){
 				res.render('detail',{
-				title:"电影网站"+movie.title,
+				title:movie.title,
 				movie:movie,
 				comments:comments
 			})	
