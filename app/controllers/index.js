@@ -24,24 +24,30 @@ exports.index=function(req,res){
 
 exports.search = function(req,res){
 	var catId = req.query.cat;//用get从url传入搜索字符串
-	var page = req.query.p;
-	var index = page*2;
+	var page = parseInt(req.query.p);
+	var count = 2;
+	var index = page*count;
 
 	Category
 	.find({_id:catId})
 	.populate({
-    	path:'movies',
-    	options:{limit:2,skip:index}
+    	path:'movies',//movies都是objectid，需要把title和poster取出来
+    	select:'title poster'//拿到需要的分类
     })
     .exec(function(err,categories){
     	if(err){
 		console.log(err);}
 
 		var category = categories[0]||{};
+		var movies = category.movies||[];
+		var results = movies.slice(index,index+count);//每次取两个，movies已经具备了title和poster
 	res.render('results',{
 		title:"查询结果",
 		keyword:category.name,
-		category:categories[0]
+		currentPage:page+1,
+		totalPage:Math.ceil(movies.length/2),
+		movies:results,
+		query:"cat="+catId,
 		})
     })	
 };
