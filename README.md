@@ -15,29 +15,8 @@
       3.评论：可实现不同用户相互评论
       4.其他：访问监控
       
- 路由规划：/index 首页
-           |
-           |------index/movie/:id 电影详情页
-           |
-           |------index/result?q= 电影查询页
-           |
-           |------index/category=&p= 电影分类页
-           |
-           |------index/signup 注册
-           |
-           |------index/signin 登录
-           |
-           | 管理员  |------index/admin/movie/new 新增电影
-           |-------- |
-           |         |------index/admin/movie/list 电影管理
-           |          
-           |
-           | 管理员  |------index/admin/category/new 新增分类
-           |-------- |
-           |         |------index/admin/category/list 分类管理
-           |          
-           |
-           | 管理员  |------index/admin/category/new 新增分类
-           |-------- |
-                     |------index/admin/category/list 分类管理
+ 路由规划：/index 首页 index/movie/:id 电影详情页index/result?q= 电影查询页index/category=&p= 电影分类页index/signup 注册
+index/signin 登录
+管理员：index/admin/movie/new 新增电影 index/admin/movie/list 电影管理index/admin/category/new 新增分类
+index/admin/category/list 分类管理index/admin/category/new 新增分类index/admin/category/list 分类管理
            
