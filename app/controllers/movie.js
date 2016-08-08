@@ -2,7 +2,8 @@ var _= require('underscore');
 var Movie = require('../models/movie');
 var Comment = require('../models/comment');
 var Category = require('../models/category');
-
+var fs = require('fs');
+var path = require('path');
 //编写管理页路由
 exports.new = function(req,res){
 	Category.find({},function(err,categories){
@@ -21,6 +22,9 @@ exports.save=function(req,res){
 	var movieobj = req.body.movie;
 	var _movie;
 
+	if(req.poster){
+		movieobj.poster=req.poster;
+	}
 	//id不是未声明的，说明已经存储过了
 	if(id){
 		Movie.findById(id,function(err,movie){
@@ -37,7 +41,7 @@ exports.save=function(req,res){
 			})
 		})
 	}else{
-			_movie = new Movie(movieobj);
+				_movie = new Movie(movieobj);
 				var categoryId = movieobj.category;//拿到这部新增电影的类别
 				var categoryName = movieobj.categoryName;//拿到这部电影自定义的类别
 
@@ -90,6 +94,10 @@ exports.update = function(req,res){
 //编写详情页，get就是服务器用来处理get请求的路由函数
 exports.detail = function(req,res){
 	var id = req.params.id;
+	Movie.update({_id:id},{$inc:{pv:1}},function(err){
+		if(err){console.log(err);}
+	});
+
 	Movie.findById(id,function(err,movie){
 		//在comment中找，当前url中的id和movie中id对应的那条评论
 		Comment
@@ -132,5 +140,30 @@ exports.del = function(req,res){
 				res.json({success:1})//没有异常返回json数据
 			}
 		})
+	}
+};
+
+exports.saveImage = function(req,res,next){
+	var posterData = req.files.uploadPoster;//从files中取出的数据
+	var filePath = posterData.path;//取路径	
+	var originalFilename = posterData.originalFilename;
+	console.log("啥东西啊这是为啥undefined"+originalFilename)
+
+	if(originalFilename){
+		fs.readFile(filePath,function(err,data){
+			var timestamp=Date.now();
+			var type = posterData.type.split('/')[1];
+			var poster =timestamp+'.'+type;
+			var newPath = path.join(__dirname,'../../','/public/upload/'+poster);
+			console.log("filepath:"+filePath);
+			console.log("newpath:"+newPath);		
+			console.log("type:"+type);		
+			fs.writeFile(newPath,data,function(err){
+				req.poster = poster;
+				next();
+			})
+		})
+	}else{
+		next();
 	}
 };

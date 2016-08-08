@@ -3,7 +3,7 @@ extend ../layout
 block content
   .container
     .row 
-      form.form-horizontal(method="post",action="/admin/movie")
+      form.form-horizontal(method="post",action="/admin/movie",enctype="multipart/form-data")
         .form-group
           label.col-sm-2.control-label(for="douban") 豆瓣同步
           .col-sm-3
@@ -48,13 +48,17 @@ block content
           .col-sm-6
             input#inputPoster.form-control(type="text",name="movie[poster]",value=movie.poster)
         .form-group
+          label.col-sm-2.control-label(for="uploadPoster") 海报上传
+          .col-sm-6
+            input#uploadPoster(type="file",name="uploadPoster")
+        .form-group
           label.col-sm-2.control-label(for="inputPoster") 片源地址
           .col-sm-6
             input#inputFlash.form-control(type="text",name="movie[flash]",value=movie.flash)
         .form-group
           label.col-sm-2.control-label(for="inputSummary") 电影简介
           .col-sm-6
-            textarea#inputSummary.form-control(type="text",name="movie[summary]",value=movie.summary)
+            input#inputSummary.form-control(type="text",name="movie[summary]",value=movie.summary)
         .form-group
           .col-sm-10
           button.btn.btn-default(type="submit") 录入

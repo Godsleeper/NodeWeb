@@ -27,7 +27,7 @@ app.delete('/admin/movie/list',User.signinRequired,User.adminRequired,Movie.del)
 //更新的功能
 app.get('/admin/movie/update/:id',User.signinRequired,User.adminRequired,Movie.update);
 //添加页
-app.post('/admin/movie',User.signinRequired,User.adminRequired,Movie.save);
+app.post('/admin/movie',User.signinRequired,User.adminRequired,Movie.saveImage,Movie.save);
 //管理页
 app.get('/admin/movie/new',User.signinRequired,User.adminRequired,Movie.new);
 

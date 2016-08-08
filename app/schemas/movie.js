@@ -10,6 +10,10 @@ var MovieSchema = new Schema({
 	summary:String,
 	poster:String,
 	year:Number,
+	pv:{
+		type:Number,
+		default:0
+	},
 	category:{
 		type:ObjectId,
 		ref:'Category'

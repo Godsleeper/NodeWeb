@@ -2,7 +2,7 @@ var express = require("express");
 var path = require('path');//处理路径的模块
 var mongoose = require('mongoose');
 var mongoStore = require('connect-mongo')(express);
-
+var multipart = require('connect-multiparty');
 
 
 var port = process.env.PORT||3000;//当前环境变量的端口号
@@ -15,6 +15,7 @@ mongoose.connect(dbURL);//连接数据库
 app.set("views","./app/views/pages")//参数为views，设置视图文件目录
 app.set("view engine","jade");//模板引擎为jade,MVC中的v视图由模板引擎创建html
 
+app.use(multipart());
 app.use(express.bodyParser());//使用中间件解析post请求
 app.use(express.static(path.join(__dirname,'public')));//设置静态文件地址，都在public下
 app.use(express.cookieParser());
