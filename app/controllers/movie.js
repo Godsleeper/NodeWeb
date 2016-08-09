@@ -122,6 +122,7 @@ exports.list = function(req,res){
 			console.log(err);
 		}
 		//渲染模版引擎生成的页面
+
 		res.render('list',{
 			title:"列表页",
 			movies:movies

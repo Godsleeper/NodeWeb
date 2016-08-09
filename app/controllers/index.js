@@ -15,7 +15,7 @@ exports.index=function(req,res){
 		console.log(err);}
 
 	//渲染模版引擎生成的页面
-	res.render('index',{
+	res.render('index1',{
 		title:"爱电影",
 		categories:categories
 		})
